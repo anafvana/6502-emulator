@@ -47,8 +47,12 @@ typedef enum {
 } mode;
 
 // add with carry
+	// *state = the CPU state, pointer
+	// *memory = the entirety of the memory, pointer. It's important that it's uint8 because each "step" in the "array" that's the memory will be 8-bits long
+	// address = address where the data is -> REMOVE, MAYBE
+	// mode = which version of adc; will define how to get the data to add
 void adc(Cpu_state *state, uint8_t *memory, uint16_t address, mode m){
-	uint8_t carry = state->P & 0x01;
+	uint8_t carry = state->P & 0x01; // Check if carry is set
 	uint8_t data;
 
 	switch(m){
@@ -60,9 +64,10 @@ void adc(Cpu_state *state, uint8_t *memory, uint16_t address, mode m){
 				curr_PC = (state->PCH << 8) | state->PCL;
 
 				// Data is next hex code
-				data = memory[curr_PC + 1];
+				data = memory[curr_PC + 1]; // Retrieve first element after current PCH (instruction)
 				break;
 			}
+		// Do absolute now
 		default:
 			data = memory[address];
 			printf("Panic time\n");
